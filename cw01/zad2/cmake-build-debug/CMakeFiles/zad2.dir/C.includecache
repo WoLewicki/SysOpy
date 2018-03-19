@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/wojlewy/CLionProjects/zad2/library.c
+library.h
+/home/wojlewy/CLionProjects/zad2/library.h
+stdio.h
+-
+stdlib.h
+-
+values.h
+-
+
+/home/wojlewy/CLionProjects/zad2/library.h
+stdio.h
+-
+stdlib.h
+-
+
+/home/wojlewy/CLionProjects/zad2/main.c
+getopt.h
+-
+stdio.h
+-
+stdlib.h
+-
+sys/time.h
+-
+sys/resource.h
+-
+memory.h
+-
+library.h
+/home/wojlewy/CLionProjects/zad2/library.h
+

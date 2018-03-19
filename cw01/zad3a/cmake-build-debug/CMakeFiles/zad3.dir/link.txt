@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/zad3.dir/main.c.o CMakeFiles/zad3.dir/library.c.o  -o zad3 

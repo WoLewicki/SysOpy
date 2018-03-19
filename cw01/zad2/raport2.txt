@@ -1,0 +1,76 @@
+# skompiluj biblioteke
+gcc -Wall -c library.c -o library.o 
+# stworz statyczna biblioteke.a	
+ar rcs liblibrary.a library.o
+# zlinkuj biblioteke do programu
+gcc -Wall -static main.c -L. -l library -o main
+./main --elem 1000 --size 100 --alloc 0 --create --add 500
+real time spent: 0.031009 for alloc 1000 arrays and deleting it
+user time spent: 0.030924 for alloc 1000 arrays and deleting it
+system time spent: 0.000000 for alloc 1000 arrays and deleting it
+real time spent: 0.019543 for adding 1000 blocks and deleting them
+user time spent: 0.015634 for adding 1000 blocks and deleting them
+system time spent: 0.003911 for adding 1000 blocks and deleting them
+real time spent: 0.002794 for finding block 1000 times
+user time spent: 0.002795 for finding block 1000 times
+system time spent: 0.000000 for finding block 1000 times
+./main --elem 1000 --size 100 --alloc 1 --add 500
+real time spent: 0.001021 for finding block 1000 times in static
+user time spent: 0.001022 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./main --elem 3000 --size 200 --alloc 0 --create --add 400
+real time spent: 0.028292 for alloc 1000 arrays and deleting it
+user time spent: 0.028295 for alloc 1000 arrays and deleting it
+system time spent: 0.000000 for alloc 1000 arrays and deleting it
+real time spent: 0.015678 for adding 1000 blocks and deleting them
+user time spent: 0.011658 for adding 1000 blocks and deleting them
+system time spent: 0.004021 for adding 1000 blocks and deleting them
+real time spent: 0.002081 for finding block 1000 times
+user time spent: 0.002081 for finding block 1000 times
+system time spent: 0.000000 for finding block 1000 times
+./main --elem 3000 --size 200 --alloc 1 --add 400
+real time spent: 0.001042 for finding block 1000 times in static
+user time spent: 0.001045 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./main --elem 5000 --size 300 --alloc 0 --create --add 1000
+real time spent: 0.143178 for alloc 1000 arrays and deleting it
+user time spent: 0.091023 for alloc 1000 arrays and deleting it
+system time spent: 0.051629 for alloc 1000 arrays and deleting it
+real time spent: 0.041329 for adding 1000 blocks and deleting them
+user time spent: 0.040883 for adding 1000 blocks and deleting them
+system time spent: 0.000448 for adding 1000 blocks and deleting them
+real time spent: 0.005986 for finding block 1000 times
+user time spent: 0.005442 for finding block 1000 times
+system time spent: 0.000547 for finding block 1000 times
+./main --elem 5000 --size 300 --alloc 1 --add 1000
+real time spent: 0.000892 for finding block 1000 times in static
+user time spent: 0.000893 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./main --elem 7000 --size 400 --alloc 0 --create --add 4000
+real time spent: 0.789287 for alloc 1000 arrays and deleting it
+user time spent: 0.358665 for alloc 1000 arrays and deleting it
+system time spent: 0.430614 for alloc 1000 arrays and deleting it
+real time spent: 0.156948 for adding 1000 blocks and deleting them
+user time spent: 0.120379 for adding 1000 blocks and deleting them
+system time spent: 0.036571 for adding 1000 blocks and deleting them
+real time spent: 0.026071 for finding block 1000 times
+user time spent: 0.026074 for finding block 1000 times
+system time spent: 0.000000 for finding block 1000 times
+./main --elem 7000 --size 400 --alloc 1 --add 4000
+real time spent: 0.000860 for finding block 1000 times in static
+user time spent: 0.000861 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./main --elem 9000 --size 500 --alloc 0 --create --add 230
+real time spent: 0.038621 for alloc 1000 arrays and deleting it
+user time spent: 0.015335 for alloc 1000 arrays and deleting it
+system time spent: 0.023281 for alloc 1000 arrays and deleting it
+real time spent: 0.009097 for adding 1000 blocks and deleting them
+user time spent: 0.008433 for adding 1000 blocks and deleting them
+system time spent: 0.000666 for adding 1000 blocks and deleting them
+real time spent: 0.001292 for finding block 1000 times
+user time spent: 0.001293 for finding block 1000 times
+system time spent: 0.000000 for finding block 1000 times
+./main --elem 9000 --size 500 --alloc 1 --add 230
+real time spent: 0.000862 for finding block 1000 times in static
+user time spent: 0.000864 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static

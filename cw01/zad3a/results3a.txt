@@ -1,0 +1,104 @@
+# skompiluj biblioteke
+gcc -Wall -c library.c -o library.o 
+# stworz statyczna biblioteke.a	
+ar rcs liblibrary.a library.o
+# zlinkuj biblioteke do programu
+gcc -Wall -static main.c -L. -l library -o mainStatic
+#zbudowanie wspoldzielonej biblioteki ladowanej dynamicznie
+gcc -Wall -fPIC -c library.c -o library.o
+gcc -Wall -Wl,-rpath=. -fPIC -shared -o liblibrary.so library.o
+#okreslam flage DLL zeby nie dolaczylo library.h
+gcc -Wall -L. -o mainDynamic main.c -ldl -D DLL
+gcc -Wall -fPIC -c library.c -o library.o
+gcc -Wall -fPIC -shared -o liblibrary.so library.o
+gcc -Wall -Wl,-rpath=. -L. -o mainShared main.c -llibrary
+./mainStatic --elem 1000 --size 100 --alloc 0 --create --add 500
+real time spent: 0.029936 for alloc 1000 arrays and deleting it
+user time spent: 0.029918 for alloc 1000 arrays and deleting it
+system time spent: 0.000000 for alloc 1000 arrays and deleting it
+real time spent: 0.029942 for adding 1000 blocks and deleting them
+user time spent: 0.025931 for adding 1000 blocks and deleting them
+system time spent: 0.004013 for adding 1000 blocks and deleting them
+real time spent: 0.002950 for finding block 1000 times
+user time spent: 0.002952 for finding block 1000 times
+system time spent: 0.000000 for finding block 1000 times
+./mainStatic --elem 1000 --size 100 --alloc 1 --add 500
+real time spent: 0.000927 for finding block 1000 times in static
+user time spent: 0.000928 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./mainDynamic --elem 3000 --size 200 --alloc 1 --add 400
+real time spent: 0.000355 for finding block 1000 times in static
+user time spent: 0.000361 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./mainDynamic --elem 3000 --size 200 --alloc 0 --create --add 400
+real time spent: 0.032059 for alloc 1000 arrays and deleting it
+user time spent: 0.031999 for alloc 1000 arrays and deleting it
+system time spent: 0.000000 for alloc 1000 arrays and deleting it
+real time spent: 0.019229 for adding 1000 blocks and deleting them
+user time spent: 0.014922 for adding 1000 blocks and deleting them
+system time spent: 0.004309 for adding 1000 blocks and deleting them
+real time spent: 0.002236 for finding block 1000 times
+user time spent: 0.002238 for finding block 1000 times
+system time spent: 0.000000 for finding block 1000 times
+./mainShared --elem 1000 --size 100 --alloc 1 --add 500
+real time spent: 0.000962 for finding block 1000 times in static
+user time spent: 0.000969 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./mainStatic --elem 3000 --size 200 --alloc 1 --add 400
+real time spent: 0.000871 for finding block 1000 times in static
+user time spent: 0.000873 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./mainStatic --elem 5000 --size 300 --alloc 0 --create --add 1000
+real time spent: 0.144231 for alloc 1000 arrays and deleting it
+user time spent: 0.088067 for alloc 1000 arrays and deleting it
+system time spent: 0.056165 for alloc 1000 arrays and deleting it
+real time spent: 0.038904 for adding 1000 blocks and deleting them
+user time spent: 0.031308 for adding 1000 blocks and deleting them
+system time spent: 0.007597 for adding 1000 blocks and deleting them
+real time spent: 0.005289 for finding block 1000 times
+user time spent: 0.004847 for finding block 1000 times
+system time spent: 0.000442 for finding block 1000 times
+./mainDynamic --elem 5000 --size 300 --alloc 1 --add 1000
+real time spent: 0.000329 for finding block 1000 times in static
+user time spent: 0.000334 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./mainShared --elem 7000 --size 400 --alloc 0 --create --add 4000
+real time spent: 0.763898 for alloc 1000 arrays and deleting it
+user time spent: 0.367772 for alloc 1000 arrays and deleting it
+system time spent: 0.396122 for alloc 1000 arrays and deleting it
+real time spent: 0.161348 for adding 1000 blocks and deleting them
+user time spent: 0.124761 for adding 1000 blocks and deleting them
+system time spent: 0.036588 for adding 1000 blocks and deleting them
+real time spent: 0.027396 for finding block 1000 times
+user time spent: 0.025914 for finding block 1000 times
+system time spent: 0.001484 for finding block 1000 times
+./mainStatic --elem 7000 --size 400 --alloc 1 --add 4000
+real time spent: 0.000859 for finding block 1000 times in static
+user time spent: 0.000861 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+./mainDynamic --elem 9000 --size 500 --alloc 0 --create --add 230
+real time spent: 0.045733 for alloc 1000 arrays and deleting it
+user time spent: 0.023097 for alloc 1000 arrays and deleting it
+system time spent: 0.022642 for alloc 1000 arrays and deleting it
+real time spent: 0.009886 for adding 1000 blocks and deleting them
+user time spent: 0.006815 for adding 1000 blocks and deleting them
+system time spent: 0.003073 for adding 1000 blocks and deleting them
+real time spent: 0.001461 for finding block 1000 times
+user time spent: 0.000780 for finding block 1000 times
+system time spent: 0.000682 for finding block 1000 times
+./mainShared --elem 9000 --size 500 --alloc 1 --add 230
+real time spent: 0.000949 for finding block 1000 times in static
+user time spent: 0.000954 for finding block 1000 times in static
+system time spent: 0.000000 for finding block 1000 times in static
+make clean
+make[1]: Entering directory '/home/wojlewy/CLionProjects/zad3a'
+rm -f *.o
+rm -f *.a
+rm -f *.so
+rm -f mainStatic
+rm -f mainDynamic
+rm -f mainShared
+make[1]: Leaving directory '/home/wojlewy/CLionProjects/zad3a'
+
+Pod wzgledem predkosci biblioteki wydaja sie klasyfikowac nastepujaca: 
+najszybsze sa statyczne, potem dynamiczne a na koncu dzielone
