@@ -1,0 +1,3 @@
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad2b/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad2b/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad2b/cmake-build-debug/CMakeFiles/zad2b.dir

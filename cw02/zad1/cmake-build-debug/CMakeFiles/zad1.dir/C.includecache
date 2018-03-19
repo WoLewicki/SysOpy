@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1/main.c
+stdio.h
+-
+fcntl.h
+-
+unistd.h
+-
+memory.h
+-
+operations.h
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1/operations.h
+
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1/operations.c
+operations.h
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1/operations.h
+stdio.h
+-
+stdlib.h
+-
+fcntl.h
+-
+unistd.h
+-
+sys/types.h
+-
+sys/stat.h
+-
+memory.h
+-
+
+/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1/operations.h
+stdio.h
+-
+stdlib.h
+-
+

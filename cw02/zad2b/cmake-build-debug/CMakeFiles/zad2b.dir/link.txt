@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/zad2b.dir/main.c.o  -o zad2b 

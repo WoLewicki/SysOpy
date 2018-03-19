@@ -1,0 +1,520 @@
+# skompiluj biblioteke
+gcc -Wall -c operations.c -o operations.o 
+# stworz statyczna biblioteke.a	
+ar rcs liboperations.a operations.o
+# zlinkuj biblioteke do programu
+gcc -Wall -static main.c -L. -l operations -o main
+#
+#
+#testy dla rozmiaru rekordu 4 i liczby rekordow 100
+./main generate dane 100 4
+./main copy dane kopia 10 sys
+real time spent: 0.000771 for sys copy file
+user time spent: 0.000773 for sys copy file
+system time spent: 0.000000 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.000119 for lib copy file
+user time spent: 0.000120 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 4 sys
+real time spent: 0.010513 for system sort file
+user time spent: 0.003372 for system sort file
+system time spent: 0.007143 for system sort file
+./main sort kopia 100 4 lib
+real time spent: 0.009061 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.009054 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4 i liczby rekordow 500
+./main generate dane 500 4
+./main copy dane kopia 10 sys
+real time spent: 0.000736 for sys copy file
+user time spent: 0.000737 for sys copy file
+system time spent: 0.000000 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.000103 for lib copy file
+user time spent: 0.000105 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 4 sys
+real time spent: 0.202341 for system sort file
+user time spent: 0.028128 for system sort file
+system time spent: 0.174103 for system sort file
+./main sort kopia 500 4 lib
+real time spent: 0.199465 for lib sort file
+user time spent: 0.035678 for lib sort file
+system time spent: 0.163621 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 512 i liczby rekordow 100
+./main generate dane 100 512
+./main copy dane kopia 10 sys
+real time spent: 0.014509 for sys copy file
+user time spent: 0.000000 for sys copy file
+system time spent: 0.014511 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.000331 for lib copy file
+user time spent: 0.000332 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 512 sys
+real time spent: 0.009341 for system sort file
+user time spent: 0.004549 for system sort file
+system time spent: 0.004760 for system sort file
+./main sort kopia 100 512 lib
+real time spent: 0.009628 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.009618 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 512 i liczby rekordow 500
+./main generate dane 500 512
+./main copy dane kopia 10 sys
+real time spent: 0.075037 for sys copy file
+user time spent: 0.011686 for sys copy file
+system time spent: 0.063343 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.001378 for lib copy file
+user time spent: 0.001380 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 512 sys
+real time spent: 0.207971 for system sort file
+user time spent: 0.019808 for system sort file
+system time spent: 0.188034 for system sort file
+./main sort kopia 500 512 lib
+real time spent: 0.212363 for lib sort file
+user time spent: 0.050926 for lib sort file
+system time spent: 0.161438 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4096 i liczby rekordow 100
+./main generate dane 100 4096
+./main copy dane kopia 10 sys
+real time spent: 0.117235 for sys copy file
+user time spent: 0.015464 for sys copy file
+system time spent: 0.101772 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.001942 for lib copy file
+user time spent: 0.001944 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 4096 sys
+real time spent: 0.009502 for system sort file
+user time spent: 0.000000 for system sort file
+system time spent: 0.009332 for system sort file
+./main sort kopia 100 4096 lib
+real time spent: 0.010459 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.010461 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4096 i liczby rekordow 500
+./main generate dane 500 4096
+./main copy dane kopia 10 sys
+real time spent: 0.579040 for sys copy file
+user time spent: 0.047687 for sys copy file
+system time spent: 0.531324 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.009576 for lib copy file
+user time spent: 0.004674 for lib copy file
+system time spent: 0.004903 for lib copy file
+./main sort dane 500 4096 sys
+real time spent: 0.229682 for system sort file
+user time spent: 0.035431 for system sort file
+system time spent: 0.194252 for system sort file
+./main sort kopia 500 4096 lib
+real time spent: 0.210858 for lib sort file
+user time spent: 0.044372 for lib sort file
+system time spent: 0.166356 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 8192 i liczby rekordow 100
+./main generate dane 100 8192
+./main copy dane kopia 10 sys
+real time spent: 0.239239 for sys copy file
+user time spent: 0.024181 for sys copy file
+system time spent: 0.213359 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.003798 for lib copy file
+user time spent: 0.000000 for lib copy file
+system time spent: 0.003799 for lib copy file
+./main sort dane 100 8192 sys
+real time spent: 0.011263 for system sort file
+user time spent: 0.000000 for system sort file
+system time spent: 0.011265 for system sort file
+./main sort kopia 100 8192 lib
+real time spent: 0.013753 for lib sort file
+user time spent: 0.006761 for lib sort file
+system time spent: 0.006993 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 8192 i liczby rekordow 500
+./main generate dane 500 8192
+./main copy dane kopia 10 sys
+real time spent: 1.150052 for sys copy file
+user time spent: 0.123899 for sys copy file
+system time spent: 1.025651 for sys copy file
+./main copy dane kopia 10 lib
+real time spent: 0.018509 for lib copy file
+user time spent: 0.014747 for lib copy file
+system time spent: 0.003756 for lib copy file
+./main sort dane 500 8192 sys
+real time spent: 0.293285 for system sort file
+user time spent: 0.048006 for system sort file
+system time spent: 0.245255 for system sort file
+./main sort kopia 500 8192 lib
+real time spent: 0.304111 for lib sort file
+user time spent: 0.052409 for lib sort file
+system time spent: 0.251268 for lib sort file
+make clean
+make[1]: Entering directory '/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1'
+rm main
+rm -f *.o
+rm -f *.a
+make[1]: Leaving directory '/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1'
+# skompiluj biblioteke
+gcc -Wall -c operations.c -o operations.o 
+# stworz statyczna biblioteke.a	
+ar rcs liboperations.a operations.o
+# zlinkuj biblioteke do programu
+gcc -Wall -static main.c -L. -l operations -o main
+#
+#
+#testy dla rozmiaru rekordu 4 i liczby rekordow 100
+./main generate dane 100 4
+./main copy dane kopia 40 10 sys
+real time spent: 0.000790 for sys copy file
+user time spent: 0.000792 for sys copy file
+system time spent: 0.000000 for sys copy file
+./main copy dane kopia 40 10 lib
+real time spent: 0.000114 for lib copy file
+user time spent: 0.000115 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 4 sys
+real time spent: 0.009588 for system sort file
+user time spent: 0.003037 for system sort file
+system time spent: 0.006553 for system sort file
+./main sort kopia 100 4 lib
+real time spent: 0.009201 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.009202 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4 i liczby rekordow 500
+./main generate dane 500 4
+./main copy dane kopia 200 10 sys
+real time spent: 0.000629 for sys copy file
+user time spent: 0.000630 for sys copy file
+system time spent: 0.000000 for sys copy file
+./main copy dane kopia 200 10 lib
+real time spent: 0.000111 for lib copy file
+user time spent: 0.000113 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 4 sys
+real time spent: 0.190284 for system sort file
+user time spent: 0.015641 for system sort file
+system time spent: 0.174637 for system sort file
+./main sort kopia 500 4 lib
+real time spent: 0.189533 for lib sort file
+user time spent: 0.056262 for lib sort file
+system time spent: 0.133272 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 512 i liczby rekordow 100
+./main generate dane 100 512
+./main copy dane kopia 5120 10 sys
+real time spent: 0.016292 for sys copy file
+user time spent: 0.008038 for sys copy file
+system time spent: 0.008256 for sys copy file
+./main copy dane kopia 5120 10 lib
+real time spent: 0.000355 for lib copy file
+user time spent: 0.000356 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 512 sys
+real time spent: 0.009556 for system sort file
+user time spent: 0.003015 for system sort file
+system time spent: 0.006543 for system sort file
+./main sort kopia 100 512 lib
+real time spent: 0.010978 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.010979 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 512 i liczby rekordow 500
+./main generate dane 500 512
+./main copy dane kopia 2560 10 sys
+real time spent: 0.069962 for sys copy file
+user time spent: 0.015369 for sys copy file
+system time spent: 0.054594 for sys copy file
+./main copy dane kopia 2560 10 lib
+real time spent: 0.000279 for lib copy file
+user time spent: 0.000280 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 512 sys
+real time spent: 0.197526 for system sort file
+user time spent: 0.048128 for system sort file
+system time spent: 0.149094 for system sort file
+./main sort kopia 500 512 lib
+real time spent: 0.005189 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.005190 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4096 i liczby rekordow 100
+./main generate dane 100 4096
+./main copy dane kopia 40960 10 sys
+real time spent: 0.112140 for sys copy file
+user time spent: 0.023007 for sys copy file
+system time spent: 0.089097 for sys copy file
+./main copy dane kopia 40960 10 lib
+real time spent: 0.001929 for lib copy file
+user time spent: 0.001930 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 4096 sys
+real time spent: 0.009537 for system sort file
+user time spent: 0.000000 for system sort file
+system time spent: 0.009539 for system sort file
+./main sort kopia 100 4096 lib
+real time spent: 0.008950 for lib sort file
+user time spent: 0.004337 for lib sort file
+system time spent: 0.004614 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4096 i liczby rekordow 500
+./main generate dane 500 4096
+./main copy dane kopia 204800 10 sys
+real time spent: 0.547102 for sys copy file
+user time spent: 0.043691 for sys copy file
+system time spent: 0.503394 for sys copy file
+./main copy dane kopia 204800 10 lib
+real time spent: 0.009397 for lib copy file
+user time spent: 0.006182 for lib copy file
+system time spent: 0.003206 for lib copy file
+./main sort dane 500 4096 sys
+real time spent: 0.214783 for system sort file
+user time spent: 0.040251 for system sort file
+system time spent: 0.174512 for system sort file
+./main sort kopia 500 4096 lib
+real time spent: 0.195827 for lib sort file
+user time spent: 0.031712 for lib sort file
+system time spent: 0.164013 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 8192 i liczby rekordow 100
+./main generate dane 100 8192
+./main copy dane kopia 81920 10 sys
+real time spent: 0.219350 for sys copy file
+user time spent: 0.023956 for sys copy file
+system time spent: 0.195395 for sys copy file
+./main copy dane kopia 81920 10 lib
+real time spent: 0.003911 for lib copy file
+user time spent: 0.000000 for lib copy file
+system time spent: 0.003912 for lib copy file
+./main sort dane 100 8192 sys
+real time spent: 0.010791 for system sort file
+user time spent: 0.000000 for system sort file
+system time spent: 0.010793 for system sort file
+./main sort kopia 100 8192 lib
+real time spent: 0.011410 for lib sort file
+user time spent: 0.003668 for lib sort file
+system time spent: 0.007743 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 8192 i liczby rekordow 500
+./main generate dane 500 8192
+./main copy dane kopia 409600 10 sys
+real time spent: 1.090850 for sys copy file
+user time spent: 0.123598 for sys copy file
+system time spent: 0.966859 for sys copy file
+./main copy dane kopia 409600 10 lib
+real time spent: 0.018617 for lib copy file
+user time spent: 0.018619 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 8192 sys
+real time spent: 0.278571 for system sort file
+user time spent: 0.036135 for system sort file
+system time spent: 0.242405 for system sort file
+./main sort kopia 500 8192 lib
+real time spent: 0.295859 for lib sort file
+user time spent: 0.039475 for lib sort file
+system time spent: 0.256324 for lib sort file
+make clean
+make[1]: Entering directory '/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1'
+rm main
+rm -f *.o
+rm -f *.a
+make[1]: Leaving directory '/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1'
+# skompiluj biblioteke
+gcc -Wall -c operations.c -o operations.o 
+# stworz statyczna biblioteke.a	
+ar rcs liboperations.a operations.o
+# zlinkuj biblioteke do programu
+gcc -Wall -static main.c -L. -l operations -o main
+#
+#
+#testy dla rozmiaru rekordu 4 i liczby rekordow 100
+./main generate dane 100 4
+./main copy dane kopia 40 10 sys
+real time spent: 0.009959 for sys copy file
+user time spent: 0.000000 for sys copy file
+system time spent: 0.009960 for sys copy file
+./main copy dane kopia 40 10 lib
+real time spent: 0.000106 for lib copy file
+user time spent: 0.000108 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 4 sys
+real time spent: 0.007989 for system sort file
+user time spent: 0.000000 for system sort file
+system time spent: 0.007941 for system sort file
+./main sort kopia 100 4 lib
+real time spent: 0.007770 for lib sort file
+user time spent: 0.003759 for lib sort file
+system time spent: 0.004010 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4 i liczby rekordow 500
+./main generate dane 500 4
+./main copy dane kopia 200 10 sys
+real time spent: 0.000580 for sys copy file
+user time spent: 0.000581 for sys copy file
+system time spent: 0.000000 for sys copy file
+./main copy dane kopia 200 10 lib
+real time spent: 0.000082 for lib copy file
+user time spent: 0.000084 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 4 sys
+real time spent: 0.187267 for system sort file
+user time spent: 0.035689 for system sort file
+system time spent: 0.151540 for system sort file
+./main sort kopia 500 4 lib
+real time spent: 0.179713 for lib sort file
+user time spent: 0.059717 for lib sort file
+system time spent: 0.119959 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 512 i liczby rekordow 100
+./main generate dane 100 512
+./main copy dane kopia 5120 10 sys
+real time spent: 0.014901 for sys copy file
+user time spent: 0.000000 for sys copy file
+system time spent: 0.014893 for sys copy file
+./main copy dane kopia 5120 10 lib
+real time spent: 0.000314 for lib copy file
+user time spent: 0.000316 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 512 sys
+real time spent: 0.009607 for system sort file
+user time spent: 0.000000 for system sort file
+system time spent: 0.009606 for system sort file
+./main sort kopia 100 512 lib
+real time spent: 0.011290 for lib sort file
+user time spent: 0.003588 for lib sort file
+system time spent: 0.007689 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 512 i liczby rekordow 500
+./main generate dane 500 512
+./main copy dane kopia 2560 10 sys
+real time spent: 0.067951 for sys copy file
+user time spent: 0.011798 for sys copy file
+system time spent: 0.056093 for sys copy file
+./main copy dane kopia 2560 10 lib
+real time spent: 0.000445 for lib copy file
+user time spent: 0.000000 for lib copy file
+system time spent: 0.000439 for lib copy file
+./main sort dane 500 512 sys
+real time spent: 0.183815 for system sort file
+user time spent: 0.019659 for system sort file
+system time spent: 0.164098 for system sort file
+./main sort kopia 500 512 lib
+real time spent: 0.007633 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.007623 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4096 i liczby rekordow 100
+./main generate dane 100 4096
+./main copy dane kopia 40960 10 sys
+real time spent: 0.106180 for sys copy file
+user time spent: 0.007928 for sys copy file
+system time spent: 0.098220 for sys copy file
+./main copy dane kopia 40960 10 lib
+real time spent: 0.001948 for lib copy file
+user time spent: 0.001949 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 100 4096 sys
+real time spent: 0.008409 for system sort file
+user time spent: 0.008409 for system sort file
+system time spent: 0.000000 for system sort file
+./main sort kopia 100 4096 lib
+real time spent: 0.007676 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.007675 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 4096 i liczby rekordow 500
+./main generate dane 500 4096
+./main copy dane kopia 204800 10 sys
+real time spent: 0.520113 for sys copy file
+user time spent: 0.064267 for sys copy file
+system time spent: 0.455588 for sys copy file
+./main copy dane kopia 204800 10 lib
+real time spent: 0.009332 for lib copy file
+user time spent: 0.009332 for lib copy file
+system time spent: 0.000000 for lib copy file
+./main sort dane 500 4096 sys
+real time spent: 0.211077 for system sort file
+user time spent: 0.023672 for system sort file
+system time spent: 0.187339 for system sort file
+./main sort kopia 500 4096 lib
+real time spent: 0.191428 for lib sort file
+user time spent: 0.067619 for lib sort file
+system time spent: 0.123737 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 8192 i liczby rekordow 100
+./main generate dane 100 8192
+./main copy dane kopia 81920 10 sys
+real time spent: 0.208929 for sys copy file
+user time spent: 0.031930 for sys copy file
+system time spent: 0.176957 for sys copy file
+./main copy dane kopia 81920 10 lib
+real time spent: 0.003740 for lib copy file
+user time spent: 0.000000 for lib copy file
+system time spent: 0.003740 for lib copy file
+./main sort dane 100 8192 sys
+real time spent: 0.010458 for system sort file
+user time spent: 0.003327 for system sort file
+system time spent: 0.007130 for system sort file
+./main sort kopia 100 8192 lib
+real time spent: 0.011393 for lib sort file
+user time spent: 0.000000 for lib sort file
+system time spent: 0.011392 for lib sort file
+#
+#
+#testy dla rozmiaru rekordu 8192 i liczby rekordow 5000
+./main generate dane 5000 8192
+./main copy dane kopia 4096000 10 sys
+real time spent: 10.456123 for sys copy file
+user time spent: 1.107539 for sys copy file
+system time spent: 9.346231 for sys copy file
+./main copy dane kopia 4096000 10 lib
+real time spent: 0.184267 for lib copy file
+user time spent: 0.137101 for lib copy file
+system time spent: 0.047086 for lib copy file
+./main sort dane 5000 8192 sys
+real time spent: 30.085535 for system sort file
+user time spent: 3.359448 for system sort file
+system time spent: 26.717590 for system sort file
+./main sort kopia 5000 8192 lib
+real time spent: 31.184874 for lib sort file
+user time spent: 4.826811 for lib sort file
+system time spent: 26.350866 for lib sort file
+make clean
+make[1]: Entering directory '/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1'
+rm main
+rm -f *.o
+rm -f *.a
+make[1]: Leaving directory '/home/wojlewy/CLionProjects/LewickiWojciech/cw02/zad1'
+
+Komentarz: Na podstawie testow zauwazylem, ze systemowe kopiowanie pliku jest nawet do 100 razy wolniejsze od bibliotecznego. Na systemowe kopiowanie 
+uzywany jest glownie czas systemowy, gdzie na biblioteczne jest z tym inaczej za kazdym razem. Sortowanie systemowe jest nieznacznie szybsze od bibliotecznego,
+choć uzywa wiecej czasu systemowego, a mniej uzytkownika. Czas wykonania rosnie proporcjonalnie do zwiekszania liczby rekordow oraz ich rozmiaru.

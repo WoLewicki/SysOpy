@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/zad1.dir/main.c.o CMakeFiles/zad1.dir/operations.c.o  -o zad1 
