@@ -1,0 +1,2 @@
+./test1
+/home/wojlewy/CLionProjects/LewickiWojciech/cw01/zad2/main --elem 1000 --size 100 --alloc 0 --create --add 500
