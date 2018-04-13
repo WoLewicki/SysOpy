@@ -1,0 +1,4 @@
+ps aux | wc -l
+ls -l | wc -l
+ls -al
+ls -l | wc -l
