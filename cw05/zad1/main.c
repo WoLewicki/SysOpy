@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
         if (strcmp(line, "\n") == 0) FAILURE_EXIT(1, "Blank line detected. Ending.\n");
         while ((pipes[i++] = strtok_r(NULL, " \n", &word)) && i<ARGS_MAX*PIPES_MAX); // rozdzielenie linijki na pojedyncze wyrazy
         printf("Executing line: ");
-        for (int l =0; l< i; l++)
+        for (int l =0; l< i -1; l++)
         {
         	printf("%s ",pipes[l]);
         }
@@ -97,5 +97,6 @@ int main(int argc, char *argv[]) {
         }
     }
     fclose(input);
+    sleep(1);
     return 0;
 }
