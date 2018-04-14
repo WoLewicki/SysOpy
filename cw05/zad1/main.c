@@ -25,9 +25,9 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
     int len = LINE_MAX;
-    char line[ARGS_MAX];
+    char line[ARGS_MAX * PIPES_MAX];
     int fds[2][2];
-    volatile int proccounter =0;
+    int proccounter =0;
     while (fgets(line, len, input))
     {
         char *word = line;
@@ -37,8 +37,7 @@ int main(int argc, char *argv[]) {
         int pipescounter =0;
         char** *procargs = calloc(PIPES_MAX, sizeof(char **)); // tablica wskaznikow na tablice argumentow execa
         char** pipes=  calloc(PIPES_MAX*ARGS_MAX, sizeof(char*)); // przyjmuje do ARGS_MAX argumentow
-        if (strcmp(line, "\n") != 0)
-     {
+        if (strcmp(line, "\n") == 0) FAILURE_EXIT(1, "Blank line detected. Ending.\n");
         while ((pipes[i++] = strtok_r(NULL, " \n", &word)) && i<ARGS_MAX*PIPES_MAX); // rozdzielenie linijki na pojedyncze wyrazy
         printf("Executing line: ");
         for (int l =0; l< i; l++)
@@ -47,7 +46,7 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
         while (j < i) {
-            char **arguments = calloc(ARGS_MAX + 1, sizeof(char *));
+            char **arguments = calloc(ARGS_MAX, sizeof(char *));
             while (j < i && pipes[j] != NULL && strcmp(pipes[j], "|") != 0) {
                 arguments[j - lastpipeindex] = pipes[j];
                 j++;
@@ -85,20 +84,18 @@ int main(int argc, char *argv[]) {
        }
 
          for (int k = 0; k <pipescounter ; ++k) free(procargs[k]);
-     }
         free(procargs);
         free(pipes);
 
         close(fds[proccounter % 2][STDIN_FILENO]);
         close(fds[proccounter % 2][STDOUT_FILENO]);
-    }
-    while(wait(NULL)) // zwraca -1 gdy nie ma juz dzieci wiec poczeka na zakonczenie wszystkich procesow
-    {
-        if (errno == ECHILD) {
-            break;
+        while(wait(NULL)) // zwraca -1 gdy nie ma juz dzieci wiec poczeka na zakonczenie wszystkich procesow
+        {
+            if (errno == ECHILD) {
+                break;
+            }
         }
     }
     fclose(input);
-    sleep(1);
     return 0;
 }
