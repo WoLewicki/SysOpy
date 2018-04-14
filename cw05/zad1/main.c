@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
             pipescounter++;
         } // dzieki temu posiadam tablice z argumentami wywolan execa dla kazdego forka
         if (pipescounter == 0) FAILURE_EXIT(1, "No processes to make, 0 commands passed.\n");
+        int lastinline =0;
        for (proccounter = 0; proccounter < pipescounter; proccounter++)// dopoki mam kolejne listy argumentow do wywolania execa
        {
            if (proccounter > 1) {
@@ -67,7 +68,6 @@ int main(int argc, char *argv[]) {
                printf("Couldn't pipe in  %d process.\n", proccounter);
 
            pid_t process = fork();
-         
            if (process == -1) FAILURE_EXIT(1, "Couldnt fork %d process.\n", proccounter);
            if (process == 0) {
                if (proccounter < pipescounter- 1) { // ostatni proces nie zmienia STDOUT
@@ -81,22 +81,22 @@ int main(int argc, char *argv[]) {
                if (execvp(procargs[proccounter][0], procargs[proccounter]) <0 )
                FAILURE_EXIT(1, "Failed to execute %d process.\n", proccounter);
                         }
+           lastinline = process;
        }
-
-         for (int k = 0; k <pipescounter ; ++k) free(procargs[k]);
+        for (int k = 0; k <pipescounter ; ++k) free(procargs[k]);
         free(procargs);
         free(pipes);
 
         close(fds[proccounter % 2][STDIN_FILENO]);
         close(fds[proccounter % 2][STDOUT_FILENO]);
-        while(wait(NULL)) // zwraca -1 gdy nie ma juz dzieci wiec poczeka na zakonczenie wszystkich procesow
-        {
-            if (errno == ECHILD) {
-                break;
-            }
+        waitpid(lastinline, NULL, 0);
+    }
+    while(wait(NULL)) // zwraca -1 gdy nie ma juz dzieci wiec poczeka na zakonczenie wszystkich procesow
+    {
+        if (errno == ECHILD) {
+            break;
         }
     }
     fclose(input);
-    sleep(1);
     return 0;
 }
