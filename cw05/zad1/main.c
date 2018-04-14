@@ -8,14 +8,15 @@
 #define ARGS_MAX 12
 #define LINE_MAX 120
 #define PIPES_MAX 10
-
+#define STDIN_FILENO 0
+#define WRITE_END 1
 #define FAILURE_EXIT(code, format, ...) { fprintf(stderr, format, ##__VA_ARGS__); exit(code);}
 
 
 int main(int argc, char *argv[]) {
 	if (argc != 2)
 	{
-		printf("Pass file name.\n");
+		printf("Pass file name.");
 		exit(1);
 	}
 	char *filename = argv[1];
@@ -25,9 +26,9 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
     int len = LINE_MAX;
-    char line[ARGS_MAX * PIPES_MAX];
+    char line[ARGS_MAX];
     int fds[2][2];
-    int proccounter =0;
+    volatile int proccounter =0;
     while (fgets(line, len, input))
     {
         char *word = line;
@@ -37,16 +38,11 @@ int main(int argc, char *argv[]) {
         int pipescounter =0;
         char** *procargs = calloc(PIPES_MAX, sizeof(char **)); // tablica wskaznikow na tablice argumentow execa
         char** pipes=  calloc(PIPES_MAX*ARGS_MAX, sizeof(char*)); // przyjmuje do ARGS_MAX argumentow
-        if (strcmp(line, "\n") == 0) FAILURE_EXIT(1, "Blank line detected. Ending.\n");
+        if (strcmp(line, "\n") != 0)
+     {
         while ((pipes[i++] = strtok_r(NULL, " \n", &word)) && i<ARGS_MAX*PIPES_MAX); // rozdzielenie linijki na pojedyncze wyrazy
-        printf("Executing line: ");
-        for (int l =0; l< i -1; l++)
-        {
-        	printf("%s ",pipes[l]);
-        }
-        printf("\n");
         while (j < i) {
-            char **arguments = calloc(ARGS_MAX, sizeof(char *));
+            char **arguments = calloc(ARGS_MAX + 1, sizeof(char *));
             while (j < i && pipes[j] != NULL && strcmp(pipes[j], "|") != 0) {
                 arguments[j - lastpipeindex] = pipes[j];
                 j++;
@@ -56,9 +52,8 @@ int main(int argc, char *argv[]) {
             procargs[pipescounter] = arguments;
             pipescounter++;
         } // dzieki temu posiadam tablice z argumentami wywolan execa dla kazdego forka
-        if (pipescounter == 0) FAILURE_EXIT(1, "No processes to make, 0 commands passed.\n");
-        int lastinline =0;
-       for (proccounter = 0; proccounter < pipescounter; proccounter++)// dopoki mam kolejne listy argumentow do wywolania execa
+
+       for (proccounter = 0; proccounter <= pipescounter; proccounter++)// dopoki mam kolejne listy argumentow do wywolania execa
        {
            if (proccounter > 1) {
                close(fds[proccounter % 2][STDIN_FILENO]);
@@ -81,22 +76,21 @@ int main(int argc, char *argv[]) {
                if (execvp(procargs[proccounter][0], procargs[proccounter]) <0 )
                FAILURE_EXIT(1, "Failed to execute %d process.\n", proccounter);
                         }
-           lastinline = process;
        }
+     }
         for (int k = 0; k <pipescounter ; ++k) free(procargs[k]);
         free(procargs);
         free(pipes);
-
-        close(fds[proccounter % 2][STDIN_FILENO]);
-        close(fds[proccounter % 2][STDOUT_FILENO]);
-        waitpid(lastinline, NULL, 0);
-    }
-    while(wait(NULL)) // zwraca -1 gdy nie ma juz dzieci wiec poczeka na zakonczenie wszystkich procesow
-    {
-        if (errno == ECHILD) {
-            break;
+        while(wait(NULL)) // zwraca -1 gdy nie ma juz dzieci wiec poczeka na zakonczenie wszystkich procesow
+        {
+            if (errno == ECHILD) {
+                break;
+            }
         }
     }
+        close(fds[proccounter % 2][STDIN_FILENO]);
+        close(fds[proccounter % 2][WRITE_END]);
+
     fclose(input);
     return 0;
 }
