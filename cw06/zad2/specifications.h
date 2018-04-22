@@ -6,7 +6,7 @@
 
 #include <unistd.h>
 
-#define MAXMSGLENGTH 1024
+#define MAXMSGLENGTH 4096
 #define MAXMSG sizeof(Msg)
 #define MAXCLIENTS 10
 #define MSGSLIMIT 9
@@ -22,6 +22,6 @@ typedef struct Msg {
     char mtext[MAXMSGLENGTH];
 } Msg;
 
-const char serverpath[] = "/server";
+const char serverpath[] = "/serv";
 
 #endif //ZAD2_SPECIFICATIONS_H

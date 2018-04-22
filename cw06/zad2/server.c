@@ -25,6 +25,7 @@ int clientsarray[MAXCLIENTS][2];
 int clientscounter =0;
 int waiting =1;
 int mainqueue = -1;
+int endall =0;
 
 void removequeue()
 {
@@ -44,15 +45,15 @@ void inthandler(int signo)
 
 int main() {
     if (atexit(removequeue) < 0) FAILURE_EXIT(1, "Couldn't register atexit function.\n");
-    signal (SIGINT, inthandler);
+    if(signal(SIGINT, inthandler) == SIG_ERR) FAILURE_EXIT(1, "Registering INT failed!");
 
-    struct mq_attr attr;
-    attr.mq_flags = 0;
-    attr.mq_maxmsg = MSGSLIMIT;
-    attr.mq_msgsize = MAXMSG;
-    attr.mq_curmsgs = 0;
+    struct mq_attr posixAttr;
+    posixAttr.mq_maxmsg = MSGSLIMIT;
+    posixAttr.mq_msgsize = MAXMSG;
 
-    if ((mainqueue = mq_open(serverpath, O_CREAT | O_RDONLY, 0666, &attr)) < 0) FAILURE_EXIT(1, "SERVER: Couldn't make server's queue.\n");
+    mainqueue = mq_open(serverpath, O_RDONLY | O_CREAT | O_EXCL, 0666, &posixAttr);
+    if(mainqueue == -1) FAILURE_EXIT(1, "Creation of public queue failed!");
+
     struct mq_attr mesqueue;
     Msg receiver;
     while (1) // odbieranie komunikatow i wykonywanie polecen
@@ -95,12 +96,12 @@ int main() {
 }
 
 void startingtask (struct Msg *msger) {
-    char clientpath[20];
+    char clientpath[15];
     int clientpid = msger->pid;
     sprintf(clientpath, "/%d", clientpid);
     int clientqueue;
-    if ((clientqueue = mq_open(clientpath, O_WRONLY)) < 0) FAILURE_EXIT(1, "Couldn't open client's queue.\n");
-    printf("%d eh\n", clientqueue);
+    clientqueue = mq_open(clientpath, O_WRONLY);
+    if (clientqueue == -1) FAILURE_EXIT(1, "Couldn't open client's queue.\n");
     msger->mtype = START;
     msger->pid = getpid();
 
@@ -110,14 +111,12 @@ void startingtask (struct Msg *msger) {
         if (mq_send(clientqueue, (char *) msger, MAXMSG, 1) == -1) FAILURE_EXIT(1, "Couldn't send info to client.\n");
         if (mq_close(clientqueue) <0) FAILURE_EXIT(1, "Couldn't close client's queue.\n");
     } else {
-        printf("Doszedlem tutaj.\n");
         clientsarray[clientscounter][0] = clientpid;
         clientsarray[clientscounter][1] = clientqueue;
         sprintf(msger->mtext, "%d", clientscounter); // przydzielam klientowi jego ID na podstawie tego kiedy przyslal prosbe
         clientscounter++;
         if (mq_send(clientqueue, (char *) msger, MAXMSG, 1) == -1) FAILURE_EXIT(1, "Couldn't send access to queue to client.\n");
     }
-    printf("Wyslalem.\n");
 }
 
 void mirrortask (struct Msg *msger)
@@ -129,7 +128,7 @@ void mirrortask (struct Msg *msger)
     char temp;
     size_t len = strlen(msg) -1;
     size_t k = len;
-    for (size_t i=0;i< len/2; i++, k--)
+    for (size_t i=0;i<= len/2; i++, k--)
     {
         temp = msg[i];
         msg[i] = msg[k];
