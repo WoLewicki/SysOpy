@@ -1,0 +1,17 @@
+2 Hola mundo senores y senoritas!
+2 fdsoafsfsdkphihihihi
+3 ADD 2 3
+3 ADD 2 21312
+3 ADD 23213 32144
+3 MUL 22 332
+3 MUL 211 3231
+3 MUL 22323 31
+3 MUL 222 321
+3 SUB 23 3
+3 DIV 30 23
+3 DIV 222 23
+3 DIV 30321 23
+3 DIV 30 232
+4
+4
+4
