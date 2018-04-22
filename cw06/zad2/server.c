@@ -155,7 +155,13 @@ void calctask (struct Msg *msger)
     else if (strcmp(task, "MUL") == 0) result = (int) (strtol(firstarg,NULL, 10) * strtol(secondarg,NULL, 10));
     else if (strcmp(task, "SUB") == 0) result = (int) (strtol(firstarg,NULL, 10) - strtol(secondarg,NULL, 10));
     else if (strcmp(task, "DIV") == 0 && strtol(secondarg, NULL, 10) != 0) result = (int) (strtol(firstarg,NULL, 10) / strtol(secondarg,NULL, 10));
-    else FAILURE_EXIT(1, "Wrong task name or tried to div by 0.\n");
+    else
+    {
+     printf("Wrong calc task args or tried to div by 0.\n");
+     sprintf(msger->mtext, "%d", -1);
+     if (mq_send(clientqueue, (char *)msger, MAXMSG, 2) == -1) FAILURE_EXIT(1, "Couldn't send result of calctask to client.\n");
+     return;
+    }
     sprintf(msger->mtext, "%d", result);
     if (mq_send(clientqueue, (char *)msger, MAXMSG, 2) == -1) FAILURE_EXIT(1, "Couldn't send result of calctask to client.\n");
 }

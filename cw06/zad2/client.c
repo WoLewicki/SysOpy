@@ -65,12 +65,13 @@ int main(int argc, char *argv[]) {
     char line[LINE_MAX];
     while (fgets(line, LINE_MAX, input)) { // pierwszy argument w pliku to nr operacji, potem odpowiednie wartosci
         char *word = line;
+        if (strcmp(word, "\n") == 0) continue; 
         char *firstarg = strtok_r(NULL, " \n\t", &word);
         switch ((int) strtol(firstarg, NULL, 10))
         {
             case 2: // mirror
                 msg.mtype = MIRROR;
-                if (word == NULL) FAILURE_EXIT(1, "Passed blank line after mirror function.\n");
+                if (word == NULL) continue;
                 sprintf(msg.mtext, "%s", word); // powinno przypisac wszystko po argumencie
                 msg.pid = getpid();
                 if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send mirror msg to server in process %d\n", getpid());
@@ -84,7 +85,8 @@ int main(int argc, char *argv[]) {
                 msg.pid = getpid();
                 if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send calc msg to server in process %d\n", getpid());
                 if (mq_receive(clientqueue, (char *)&msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1, "Couldn't receive calc msg from server in process %d\n", getpid());
-                printf("%s\n", msg.mtext);
+                if (strtol(msg.mtext, NULL, 10) == -1) printf("Couldn't calculate expression. Prolly tried to div by 0. Continueing.\n");
+                else printf("%s\n", msg.mtext);
                 break;
             case 4: //time
                 msg.mtype = TIME;
@@ -103,8 +105,8 @@ int main(int argc, char *argv[]) {
                 msg.pid = getpid();
                 if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send close msg to server in process %d\n", getpid());
             default:
-                printf("Got other command so exiting.\n");
-                exit(0);
+                printf("Got other command. Continueing\n");
+                continue;
         }
     }
     fclose(input);

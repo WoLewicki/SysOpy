@@ -61,7 +61,9 @@ int main(int argc, char *argv[]) {
     char line[LINE_MAX];
     while (fgets(line, LINE_MAX, input)) { // pierwszy argument w pliku to nr operacji, potem odpowiednie wartosci
         char *word = line;
+        if (strcmp(word, "\n") == 0) continue;
         char *firstarg = strtok_r(NULL, " \n\t", &word);
+        if (word == NULL) continue;
         switch ((int) strtol(firstarg, NULL, 10))
         {
             case 2: // mirror
@@ -80,7 +82,8 @@ int main(int argc, char *argv[]) {
                 msg.pid = getpid();
                 if (msgsnd(mainqueue, &msg, MAXMSG, 0) < 0) FAILURE_EXIT(1, "Couldn't send calc msg to server in process %d\n", getpid());
                 if (msgrcv(clientqueue, &msg, MAXMSG, 0, 0) < 0) FAILURE_EXIT(1, "Couldn't receive calc msg from server in process %d\n", getpid());
-                printf("%s\n", msg.mtext);
+                if (strtol(msg.mtext, NULL, 10) == -1) printf("Couldn't calculate expression. Prolly tried to div by 0. Continueing.\n");
+                else printf("%s\n", msg.mtext);
                 break;
             case 4: //time
                 msg.mtype = TIME;
@@ -94,8 +97,8 @@ int main(int argc, char *argv[]) {
                 if (msgsnd(mainqueue, &msg, MAXMSG, 0) < 0) FAILURE_EXIT(1, "Couldn't send end msg to server in process %d\n", getpid());
                 break;
             default:
-                printf("Got other command so exiting.\n");
-                exit(0);
+                printf("Got other command. Continueing\n");
+                continue;
         }
     }
     fclose(input);
