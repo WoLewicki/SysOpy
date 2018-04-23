@@ -33,6 +33,7 @@ void removequeue()
     if (mainqueue > -1)
     {
         if (msgctl(mainqueue, IPC_RMID, NULL) < 0) printf("Couldn't remove main queue atexit.\n");
+        for (int i =0; i<= clientscounter; i++) kill(clientsarray[i][0], SIGINT);
         printf("SERVER: Ending program after having removed queue.\n");
     }
 }
@@ -112,7 +113,11 @@ void startingtask (struct Msg *msger)
         sprintf(msger->mtext, "%d", clientscounter); // przydzielam klientowi jego ID na podstawie tego kiedy przyslal prosbe
         clientscounter++;
     }
-    if (msgsnd(clientqueue, msger, MAXMSG, 0) == -1) FAILURE_EXIT(1, "Couldn't send access to queue to client.\n");
+    if (msgsnd(clientqueue, msger, MAXMSG, 0) == -1)
+    {
+        FAILURE_EXIT(1, "Couldn't send access to queue to client.\n");
+    }
+    else printf("Registered process %d with client ID %d\n", msger->pid, clientscounter-1);
 }
 
 void mirrortask (struct Msg *msger)

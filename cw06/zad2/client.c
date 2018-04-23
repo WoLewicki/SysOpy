@@ -40,11 +40,19 @@ void inthandler(int signo)
 
 
 int main(int argc, char *argv[]) {
-    if (argc != 2) FAILURE_EXIT(1, "Pass input.txt.\n");
-    FILE *input = fopen(argv[1], "r");
+    if (argc < 2) FAILURE_EXIT(1, "Pass at least 1 arg.\n");
+
+    FILE *input;
     if (atexit(removequeue) < 0) FAILURE_EXIT(1, "Couldn't register atexit function.\n");
     if(signal(SIGINT, inthandler) == SIG_ERR) FAILURE_EXIT(1, "Registering INT failed!");
     sprintf(path, "/%d", getpid());
+
+    int switcher = strtol(argv[1], NULL, 10);
+    if (switcher == 1)
+    {
+        input = fopen(argv[2], "r");
+        if (input == NULL) FAILURE_EXIT(1, "Couldn't find file to open.\n");
+    }
 
     mainqueue = mq_open(serverpath, O_WRONLY);
     if(mainqueue == -1) FAILURE_EXIT(1, "Opening public queue failed!\n");
@@ -57,7 +65,6 @@ int main(int argc, char *argv[]) {
     if(clientqueue == -1) FAILURE_EXIT(1, "Creation of private queue failed!\n");
 
     Msg msg;
-
     msg.mtype = START;
     msg.pid = getpid();
     if(mq_send(mainqueue, (char*) &msg, MAXMSG, 1) == -1) FAILURE_EXIT(1, "Login request failed!");
@@ -66,52 +73,131 @@ int main(int argc, char *argv[]) {
     if(clientID < 0) FAILURE_EXIT(1, "Server cannot have more clients!");
     printf("Client registered! My session nr is %d!\n", clientID);
 
-    char line[LINE_MAX];
-    while (fgets(line, LINE_MAX, input)) { // pierwszy argument w pliku to nr operacji, potem odpowiednie wartosci
-        char *word = line;
-        if (strcmp(word, "\n") == 0) continue; 
-        char *firstarg = strtok_r(NULL, " \n\t", &word);
-        switch ((int) strtol(firstarg, NULL, 10))
-        {
-            case 2: // mirror
+    if (switcher == 1) {
+        char line[LINE_MAX];
+        while (fgets(line, LINE_MAX, input)) { // pierwszy argument w pliku to nr operacji, potem odpowiednie wartosci
+            char *word = line;
+            if (strcmp(word, "\n") == 0) continue;
+            char *firstarg = strtok_r(NULL, " \n\t", &word);
+            switch ((int) strtol(firstarg, NULL, 10)) {
+                case 2: // mirror
+                    msg.mtype = MIRROR;
+                    if (word == NULL) continue;
+                    sprintf(msg.mtext, "%s", word); // powinno przypisac wszystko po argumencie
+                    msg.pid = getpid();
+                    if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                       "Couldn't send mirror msg to server in process %d\n",
+                                                                                       getpid());
+                    if (mq_receive(clientqueue, (char *) &msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1,
+                                                                                               "Couldn't receive mirror msg from server in process %d\n",
+                                                                                               getpid());
+                    printf("%s\n", msg.mtext);
+                    break;
+                case 3: // calc
+                    msg.mtype = CALC;
+                    if (word == NULL) FAILURE_EXIT(1, "Passed blank line after calc function.\n");
+                    sprintf(msg.mtext, "%s", word); // powinno przypisac dzialanie np ADD 3 2
+                    msg.pid = getpid();
+                    if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                       "Couldn't send calc msg to server in process %d\n",
+                                                                                       getpid());
+                    if (mq_receive(clientqueue, (char *) &msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1,
+                                                                                               "Couldn't receive calc msg from server in process %d\n",
+                                                                                               getpid());
+                    if (strtol(msg.mtext, NULL, 10) == -1)
+                        printf("Couldn't calculate expression. Prolly tried to div by 0. Continueing.\n");
+                    else printf("%s\n", msg.mtext);
+                    break;
+                case 4: //time
+                    msg.mtype = TIME;
+                    msg.pid = getpid();
+                    if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                       "Couldn't send time msg to server in process %d\n",
+                                                                                       getpid());
+                    if (mq_receive(clientqueue, (char *) &msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1,
+                                                                                               "Couldn't receive time msg from server in process %d\n",
+                                                                                               getpid());
+                    printf("%s\n", msg.mtext);
+                    break;
+                case 5: //end
+                    msg.mtype = END;
+                    msg.pid = getpid();
+                    if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                       "Couldn't send end msg to server in process %d\n",
+                                                                                       getpid());
+                    break;
+                case 6: //close client's queue in server in function called at the end of program.
+                    return 0;
+                default:
+                    printf("Got other command. Continueing\n");
+                    continue;
+            }
+        }
+        fclose(input);
+    }
+    else if (switcher == 2)
+    {
+        char cmd[20];
+        while(1){
+            msg.pid = getpid();
+            printf("Enter your request: ");
+            if(fgets(cmd, 20, stdin) == NULL){
+                printf("Error reading your command!\n");
+                continue;
+            }
+            int n = strlen(cmd);
+            if(cmd[n-1] == '\n') cmd[n-1] = 0;
+
+            if(strcmp(cmd, "mirror") == 0){
                 msg.mtype = MIRROR;
-                if (word == NULL) continue;
-                sprintf(msg.mtext, "%s", word); // powinno przypisac wszystko po argumencie
-                msg.pid = getpid();
-                if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send mirror msg to server in process %d\n", getpid());
-                if (mq_receive(clientqueue, (char *)&msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1, "Couldn't receive mirror msg from server in process %d\n", getpid());
+                printf("Enter string of characters to mirror: \n");
+                if(fgets(msg.mtext, MAXMSGLENGTH, stdin) == NULL) {
+                    printf("Too many characters!\n");
+                    continue;
+                }
+                if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                   "Couldn't send mirror msg to server in process %d\n",
+                                                                                   getpid());
+                if (mq_receive(clientqueue, (char *) &msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1,
+                                                                                           "Couldn't receive mirror msg from server in process %d\n",
+                                                                                           getpid());
                 printf("%s\n", msg.mtext);
-                break;
-            case 3: // calc
+            }else if(strcmp(cmd, "calc") == 0){
                 msg.mtype = CALC;
-                if (word == NULL) FAILURE_EXIT(1, "Passed blank line after calc function.\n");
-                sprintf(msg.mtext, "%s", word); // powinno przypisac dzialanie np ADD 3 2
-                msg.pid = getpid();
-                if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send calc msg to server in process %d\n", getpid());
-                if (mq_receive(clientqueue, (char *)&msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1, "Couldn't receive calc msg from server in process %d\n", getpid());
-                if (strtol(msg.mtext, NULL, 10) == -1) printf("Couldn't calculate expression. Prolly tried to div by 0. Continueing.\n");
+                printf("Enter expression.\n");
+                if (fgets(msg.mtext, MAXMSGLENGTH, stdin) == NULL)
+                {
+                    printf("Too many characters!\n");
+                    continue;
+                }
+                if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                   "Couldn't send calc msg to server in process %d\n",
+                                                                                   getpid());
+                if (mq_receive(clientqueue, (char *) &msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1,
+                                                                                           "Couldn't receive calc msg from server in process %d\n",
+                                                                                           getpid());
+                if (strtol(msg.mtext, NULL, 10) == -1)
+                    printf("Couldn't calculate expression. Prolly tried to div by 0. Continueing.\n");
                 else printf("%s\n", msg.mtext);
-                break;
-            case 4: //time
+            }else if(strcmp(cmd, "time") == 0){
                 msg.mtype = TIME;
-                msg.pid = getpid();
-                if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send time msg to server in process %d\n", getpid());
-                if (mq_receive(clientqueue, (char *)&msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1, "Couldn't receive time msg from server in process %d\n", getpid());
+                if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                   "Couldn't send time msg to server in process %d\n",
+                                                                                   getpid());
+                if (mq_receive(clientqueue, (char *) &msg, MAXMSG, NULL) < 0) FAILURE_EXIT(1,
+                                                                                           "Couldn't receive time msg from server in process %d\n",
+                                                                                           getpid());
                 printf("%s\n", msg.mtext);
-                break;
-            case 5: //end
+            }else if(strcmp(cmd, "end") == 0){
                 msg.mtype = END;
                 msg.pid = getpid();
-                if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send end msg to server in process %d\n", getpid());
-                break;
-            case 6: //close client's queue in server in function called at the end of program.
+                if (mq_send(mainqueue, (char *) &msg, MAXMSG, 2) < 0) FAILURE_EXIT(1,
+                                                                                   "Couldn't send end msg to server in process %d\n",
+                                                                                   getpid());
                 return 0;
-            default:
-                printf("Got other command. Continueing\n");
-                continue;
+            }else printf("Wrong command!\n");
         }
     }
-    fclose(input);
     return 0;
 }//
 // Created by wojlewy on 20.04.18.

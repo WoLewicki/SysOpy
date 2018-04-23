@@ -35,6 +35,7 @@ void removequeue()
         for (int i=0;i<clientscounter; i++) 
         {
         mq_close(clientsarray[i][1]);
+        kill(clientsarray[i][0], SIGINT);
         }
         if (mq_close(mainqueue)< 0) printf("SERVER: Couldn't close main queue atexit.\n");
         if (mq_unlink(serverpath) < 0 ) printf("SERVER: Couldn't unlink main queue.\n");
@@ -124,7 +125,11 @@ void startingtask (struct Msg *msger) {
         clientsarray[clientscounter][1] = clientqueue;
         sprintf(msger->mtext, "%d", clientscounter); // przydzielam klientowi jego ID na podstawie tego kiedy przyslal prosbe
         clientscounter++;
-        if (mq_send(clientqueue, (char *) msger, MAXMSG, 1) == -1) FAILURE_EXIT(1, "Couldn't send access to queue to client.\n");
+        if (mq_send(clientqueue, (char *) msger, MAXMSG, 1) == -1)
+        {
+            FAILURE_EXIT(1, "Couldn't send access to queue to client.\n");
+        }
+        else printf("Registered process %d with client ID %d\n", msger->pid, clientscounter-1);
     }
 }
 
