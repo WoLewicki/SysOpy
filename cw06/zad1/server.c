@@ -17,6 +17,7 @@ void startingtask(struct Msg *);
 void mirrortask (struct Msg *);
 void calctask (struct Msg *);
 void timetask (struct Msg *);
+void removeclienttask (struct Msg *);
 int prepmsg(struct Msg *);
 int findclientqueue(pid_t);
 
@@ -81,6 +82,9 @@ int main() {
                 waiting =0;
                 printf("SERVER: Got END message. Will process all received messages and then will terminate.\n");
                 break;
+            case STOP:
+            	removeclienttask(&receiver);
+            	break;    
             default:
                 FAILURE_EXIT(1, "Wrong task type passed.\n");
         }
@@ -167,6 +171,22 @@ void timetask (struct Msg *msger)
     strftime(buff, 20, "%Y-%m-%d %H:%M:%S", localtime(&now));
     sprintf(msger->mtext, "%s", buff);
     if (msgsnd(clientqueue, msger, MAXMSG, 0) == -1) FAILURE_EXIT(1, "Couldn't send result of timetask to client.\n");
+}
+
+void removeclienttask(struct Msg *msger)
+{
+	int i =0;
+	for (; i<MAXCLIENTS; i++)
+    {
+        if (clientsarray[i][0] == msger->pid) break;
+    }
+    for (; i <= clientscounter; i++)
+    {
+    	clientsarray[i][0] = clientsarray[i+1][0];
+    	clientsarray[i][1] = clientsarray[i+1][1];
+    }
+    clientscounter--;
+    printf("SERVER: Client successfully removed from clientsarray.\n");
 }
 
 int prepmsg(struct Msg *msger)

@@ -13,13 +13,22 @@
 
 
 int clientqueue = -1;
+int mainqueue = -1;
 
 void removequeue()
 {
     if (clientqueue > -1)
     {
-        if (msgctl(clientqueue, IPC_RMID, NULL) < 0) printf("Couldn't remove main queue atexit.\n");
+        if (msgctl(clientqueue, IPC_RMID, NULL) < 0) printf("Couldn't remove client queue atexit.\n");
         printf("CLIENT %d: Ending program after having removed queue.\n",getpid());
+    }
+    if (mainqueue > -1)
+    {	
+    	Msg msg;
+    	msg.mtype = STOP;
+        msg.pid = getpid();
+        if (msgsnd(mainqueue, &msg, MAXMSG, 0) < 0) printf("Couldn't send stop msg to server in process %d. Prolly server already stopped working.\n", getpid());
+        else printf("CLIENT %d: Sent STOP msg to server. Should remove my queue from array.\n", getpid());
     }
 }
 
@@ -30,7 +39,6 @@ void inthandler(int signo)
 
 
 int main(int argc, char *argv[]) {
-    sleep(1);
     if (atexit(removequeue) < 0) FAILURE_EXIT(1, "Couldn't register atexit function.\n");
     signal (SIGINT, inthandler);
 
@@ -42,7 +50,7 @@ int main(int argc, char *argv[]) {
     if (path == NULL) FAILURE_EXIT(1, "Couldn't get HOME envvar.\n");
 
     key_t mainkey = ftok(path, ID);
-    int mainqueue = msgget(mainkey, 0); // ta kolejka juz powinna istniec bo tworzy ja serwer
+    mainqueue = msgget(mainkey, 0); // ta kolejka juz powinna istniec bo tworzy ja serwer
     if (mainqueue < 0) FAILURE_EXIT(1, "Coulnd't get server's queue. Propably some other process sent END message before opening in this one.\n");
 
     key_t clientkey = ftok(path, getpid());

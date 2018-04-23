@@ -7,11 +7,11 @@
 #define MAXMSG 256
 #define ID 101
 
-#define MAXCLIENTS 100
+#define MAXCLIENTS 10
 
 
 typedef enum mtype{
-    START = 1, MIRROR = 2, CALC = 3, TIME = 4, END = 5
+    START = 1, MIRROR = 2, CALC = 3, TIME = 4, END = 5, STOP = 6
 } mtype;
 
 
