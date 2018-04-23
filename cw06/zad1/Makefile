@@ -14,11 +14,8 @@ main:
 	./client input.txt &
 	./client input.txt &
 	./client input.txt &
-	./client endinginput.txt &
-	./client input.txt &
-	./client input.txt &
-	./client input.txt &
-	./client input.txt
+	./client endinginput.txt
+
 clean:
 	rm server
 	rm client	

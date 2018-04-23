@@ -12,12 +12,14 @@
 
 #define FAILURE_EXIT(code, format, ...) { fprintf(stderr, format, ##__VA_ARGS__); exit(code);}
 
+void dotasks(struct Msg *);
 void startingtask(struct Msg *);
 void mirrortask (struct Msg *);
 void calctask (struct Msg *);
 void timetask (struct Msg *);
 int prepmsg(struct Msg *);
 int findclientqueue(pid_t);
+void closetask (struct Msg *);
 
 
 
@@ -25,16 +27,18 @@ int clientsarray[MAXCLIENTS][2];
 int clientscounter =0;
 int waiting =1;
 int mainqueue = -1;
-int endall =0;
 
 void removequeue()
 {
     if (mainqueue > -1)
     {
-        for (int i=0;i<clientscounter; i++) mq_close(clientsarray[i][1]);
+        for (int i=0;i<clientscounter; i++) 
+        {
+        mq_close(clientsarray[i][1]);
+        }
         if (mq_close(mainqueue)< 0) printf("SERVER: Couldn't close main queue atexit.\n");
         if (mq_unlink(serverpath) < 0 ) printf("SERVER: Couldn't unlink main queue.\n");
-        else printf("SERVER: Ending program after having removed queue.\n");
+        else printf("SERVER: Ending program after having removed main queue.\n");
     }
 }
 
@@ -52,7 +56,7 @@ int main() {
     posixAttr.mq_msgsize = MAXMSG;
 
     mainqueue = mq_open(serverpath, O_RDONLY | O_CREAT | O_EXCL, 0666, &posixAttr);
-    if(mainqueue == -1) FAILURE_EXIT(1, "Creation of public queue failed!");
+    if(mainqueue == -1) FAILURE_EXIT(1, "Creation of public queue failed!\n");
 
     struct mq_attr mesqueue;
     Msg receiver;
@@ -63,38 +67,43 @@ int main() {
             if (mesqueue.mq_curmsgs == 0)
             {
                 printf("SERVER: Ending main queue.\n");
-                break;
+                return 0;
             }
         }
         if (mq_receive(mainqueue, (char *)&receiver, MAXMSG, NULL) < 0) FAILURE_EXIT(1, "Couldn't receive any message from not empty queue.\n");
-        switch (receiver.mtype)
+ 		dotasks(&receiver);   
+    }
+    return 0;
+}
+
+void dotasks(struct Msg *receiver)
+{
+ if(receiver == NULL) return;
+ switch (receiver->mtype)
         {
             case START:
-                startingtask(&receiver);
+                startingtask(receiver);
                 break;
             case MIRROR:
-                mirrortask(&receiver);
+                mirrortask(receiver);
                 break;
             case CALC:
-                calctask(&receiver);
+                calctask(receiver);
                 break;
             case TIME:
-                timetask(&receiver);
+                timetask(receiver);
                 break;
             case END:
                 waiting =0;
                 printf("SERVER: Got END message. Will process all received messages and then will terminate.\n");
                 break;
             case CLOSE:
-                if (mq_close(clientsarray[receiver.pid][1]) < 0) printf("CLIENT: Couldn't close client queue atexit.\n");
+            	closetask(receiver);
                 break;
             default:
             FAILURE_EXIT(1, "Wrong task type passed.\n");
         }
-    }
-    return 0;
 }
-
 void startingtask (struct Msg *msger) {
     char clientpath[15];
     int clientpid = msger->pid;
@@ -192,4 +201,23 @@ int findclientqueue(pid_t pid)
         if (clientsarray[i][0] == pid) return clientsarray[i][1];
     }
     return -1;
+}
+
+void closetask (Msg *msger)
+{
+		int i;
+    for(i=0; i<clientscounter; i++){
+        if(clientsarray[i][0] == msger->pid) break;
+    }
+    if(i == clientscounter){
+        printf("Client Not Found!\n");
+        return;
+    }
+    if(mq_close(clientsarray[i][1]) == -1) FAILURE_EXIT(1, "Closing clients queue in CLOSE response failed!\n");
+    for(; i+1 < clientscounter; i++){
+        clientsarray[i][0] = clientsarray[i+1][0];
+        clientsarray[i][1] = clientsarray[i+1][1];
+    }
+    clientscounter--;
+    printf("Made room for other clients!\n");
 }

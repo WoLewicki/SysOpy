@@ -22,6 +22,6 @@ typedef struct Msg {
     char mtext[MAXMSGLENGTH];
 } Msg;
 
-const char serverpath[] = "/serv";
+const char serverpath[] = "/server";
 
 #endif //ZAD2_SPECIFICATIONS_H

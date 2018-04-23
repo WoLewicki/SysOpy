@@ -22,6 +22,10 @@ void removequeue()
 {
     if (mainqueue > -1 || clientqueue > -1)
     {
+    	Msg msg;
+    	msg.mtype = CLOSE;
+        msg.pid = getpid();
+        if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send close msg to server in process %d. Prolly server already stopped working.\n", getpid());
         if (mq_close(mainqueue)< 0) printf("CLIENT: Couldn't close main queue atexit.\n");
         if (mq_close(clientqueue) < 0) printf("CLIENT: Couldn't close client queue atexit.\n");
         if (mq_unlink(path) < 0) printf("Couldn't remove client queue atexit.\n");
@@ -43,20 +47,20 @@ int main(int argc, char *argv[]) {
     sprintf(path, "/%d", getpid());
 
     mainqueue = mq_open(serverpath, O_WRONLY);
-    if(mainqueue == -1) FAILURE_EXIT(3, "Opening public queue failed!");
+    if(mainqueue == -1) FAILURE_EXIT(1, "Opening public queue failed!\n");
 
     struct mq_attr posixAttr;
     posixAttr.mq_maxmsg = MSGSLIMIT;
     posixAttr.mq_msgsize = MAXMSG;
 
     clientqueue = mq_open(path, O_RDONLY | O_CREAT | O_EXCL, 0666, &posixAttr);
-    if(clientqueue == -1) FAILURE_EXIT(3, "Creation of private queue failed!");
+    if(clientqueue == -1) FAILURE_EXIT(1, "Creation of private queue failed!\n");
 
     Msg msg;
 
     msg.mtype = START;
     msg.pid = getpid();
-    if(mq_send(mainqueue, (char*) &msg, MAXMSG, 1) == -1) FAILURE_EXIT(3, "Login request failed!");
+    if(mq_send(mainqueue, (char*) &msg, MAXMSG, 1) == -1) FAILURE_EXIT(1, "Login request failed!");
     if(mq_receive(clientqueue,(char*) &msg, MAXMSG, NULL) == -1) FAILURE_EXIT(1, "Catching START response failed!");
     int clientID = (int) strtol(msg.mtext, NULL, 10);
     if(clientID < 0) FAILURE_EXIT(1, "Server cannot have more clients!");
@@ -100,10 +104,8 @@ int main(int argc, char *argv[]) {
                 msg.pid = getpid();
                 if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send end msg to server in process %d\n", getpid());
                 break;
-            case 6: //close server
-                msg.mtype = CLOSE;
-                msg.pid = getpid();
-                if (mq_send(mainqueue, (char *)&msg, MAXMSG, 2) < 0) FAILURE_EXIT(1, "Couldn't send close msg to server in process %d\n", getpid());
+            case 6: //close client's queue in server in function called at the end of program.
+                return 0;
             default:
                 printf("Got other command. Continueing\n");
                 continue;
