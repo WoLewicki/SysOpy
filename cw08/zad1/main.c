@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
         }
         k++;
     }
-    fgets(line, len, input); // tu jest jakas P2 nie weim po co
+    fgets(line, len, input); // tu jest P2
     fgets(line, len, input); // tu jest W i H
     word = line;
     int W = (int) strtol(strtok_r(NULL, " \n", &word), NULL, 10);
@@ -99,22 +99,25 @@ int main(int argc, char *argv[]) {
     fgets(line, len, input); // kolejna linijka powinna miec M
     word = line;
     int M = (int) strtol(strtok_r(NULL, " \n", &word), NULL, 10);
-    if (M > 255) FAILURE_EXIT(1, "M was bigger than 255. Exiting.\n");
+    if (M > 255 || W<0 || H<0) FAILURE_EXIT(1, "M was bigger than 255 or W/H <0. Exiting.\n");
+    int *inputhelper = calloc(sizeof(int), (size_t) W*H);
+    a=0;
+    while(fgets(line, len, input)) //przyjmuje ze dane sa w postaci macierzy linijki/kolumny
+    {
+        word = line;
+        while ((checker = strtok_r(NULL, " \n", &word))) // pobieranie floatow po kolei
+        {
+            if (checker !=NULL) inputhelper[a++] = (int) strtol(checker, NULL, 10);
+        }
+    }
+    printf("\n\n");
     int **picturearray = malloc(H* sizeof(int *));
     for ( l = 0;  l< H; ++l) {
         picturearray[l] = malloc(W * sizeof(int));
     }
-    int w =0;
-    int h = 0;
-    fgets(line, len, input); // piksele sa w jednej dlugiej linii
-    word = line;
-    while ((checker = strtok_r(NULL, " \n", &word))) // pobieranie intow
-    {
-        if (checker != NULL) picturearray[h][w++] = (int) strtol(checker, NULL, 10);
-        if (w == W)
-        {
-            w = 0;
-            h++;
+    for (int n = 0; n <H ; ++n) {
+        for (int i = 0; i <W ; ++i) {
+            picturearray[n][i] = inputhelper[n*W +i];
         }
     }
     int *helper = malloc((size_t)W*H);
@@ -157,9 +160,11 @@ int main(int argc, char *argv[]) {
     fprintf(output, "P2\n");
     fprintf(output, "%d %d\n", W, H);
     fprintf(output, "%d\n", M);
-    fprintf(output, "%d", helper[0]);
-    for (int j = 1; j <W*H ; ++j) {
-        fprintf(output, " %d", helper[j]);
+    for (int m = 0; m <H ; ++m) {
+        for (int j = 0; j < W; ++j) {
+            fprintf(output, "%d ", helper[m*W +j]);
+        }
+        fprintf(output, "\n");
     }
     fclose(input);
     fclose(filter);
