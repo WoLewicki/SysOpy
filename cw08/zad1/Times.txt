@@ -1,29 +1,29 @@
-Picture resolution: 640x480, filter c: 39, threads: 1, time spent: 2.589130s
-Picture resolution: 640x480, filter c: 39, threads: 2, time spent: 1.388723s
-Picture resolution: 640x480, filter c: 39, threads: 4, time spent: 1.402706s
-Picture resolution: 640x480, filter c: 39, threads: 8, time spent: 1.401808s
+Picture resolution: 640x480, filter c: 3, threads: 1, time spent: 0.038653s
+Picture resolution: 640x480, filter c: 3, threads: 2, time spent: 0.025351s
+Picture resolution: 640x480, filter c: 3, threads: 4, time spent: 0.031778s
+Picture resolution: 640x480, filter c: 3, threads: 8, time spent: 0.024735s
 
-Picture resolution: 640x480, filter c: 3, threads: 1, time spent: 0.025666s
-Picture resolution: 640x480, filter c: 3, threads: 2, time spent: 0.023220s
-Picture resolution: 640x480, filter c: 3, threads: 4, time spent: 0.015835s
-Picture resolution: 640x480, filter c: 3, threads: 8, time spent: 0.015906s
+Picture resolution: 640x480, filter c: 25, threads: 1, time spent: 2.342962s
+Picture resolution: 640x480, filter c: 25, threads: 2, time spent: 1.272884s
+Picture resolution: 640x480, filter c: 25, threads: 4, time spent: 1.236338s
+Picture resolution: 640x480, filter c: 25, threads: 8, time spent: 1.242325s
 
-Picture resolution: 640x480, filter c: 25, threads: 1, time spent: 1.143081s
-Picture resolution: 640x480, filter c: 25, threads: 2, time spent: 0.613022s
-Picture resolution: 640x480, filter c: 25, threads: 4, time spent: 0.581281s
-Picture resolution: 640x480, filter c: 25, threads: 8, time spent: 0.572005s
+Picture resolution: 640x480, filter c: 39, threads: 1, time spent: 5.593696s
+Picture resolution: 640x480, filter c: 39, threads: 2, time spent: 2.988925s
+Picture resolution: 640x480, filter c: 39, threads: 4, time spent: 2.964724s
+Picture resolution: 640x480, filter c: 39, threads: 8, time spent: 2.914299s
 
-Picture resolution: 320x428, filter c: 39, threads: 1, time spent: 1.170960s
-Picture resolution: 320x428, filter c: 39, threads: 2, time spent: 0.626364s
-Picture resolution: 320x428, filter c: 39, threads: 4, time spent: 0.636605s
-Picture resolution: 320x428, filter c: 39, threads: 8, time spent: 0.627407s
+Picture resolution: 320x428, filter c: 3, threads: 1, time spent: 0.022170s
+Picture resolution: 320x428, filter c: 3, threads: 2, time spent: 0.014370s
+Picture resolution: 320x428, filter c: 3, threads: 4, time spent: 0.009840s
+Picture resolution: 320x428, filter c: 3, threads: 8, time spent: 0.011993s
 
-Picture resolution: 320x428, filter c: 3, threads: 1, time spent: 0.012242s
-Picture resolution: 320x428, filter c: 3, threads: 2, time spent: 0.010465s
-Picture resolution: 320x428, filter c: 3, threads: 4, time spent: 0.007110s
-Picture resolution: 320x428, filter c: 3, threads: 8, time spent: 0.006765s
+Picture resolution: 320x428, filter c: 25, threads: 1, time spent: 1.050911s
+Picture resolution: 320x428, filter c: 25, threads: 2, time spent: 0.567783s
+Picture resolution: 320x428, filter c: 25, threads: 4, time spent: 0.554866s
+Picture resolution: 320x428, filter c: 25, threads: 8, time spent: 0.578738s
 
-Picture resolution: 320x428, filter c: 25, threads: 1, time spent: 0.506597s
-Picture resolution: 320x428, filter c: 25, threads: 2, time spent: 0.263692s
-Picture resolution: 320x428, filter c: 25, threads: 4, time spent: 0.257821s
-Picture resolution: 320x428, filter c: 25, threads: 8, time spent: 0.258658s
+Picture resolution: 320x428, filter c: 39, threads: 1, time spent: 2.483893s
+Picture resolution: 320x428, filter c: 39, threads: 2, time spent: 1.338193s
+Picture resolution: 320x428, filter c: 39, threads: 4, time spent: 1.317059s
+Picture resolution: 320x428, filter c: 39, threads: 8, time spent: 1.310887s

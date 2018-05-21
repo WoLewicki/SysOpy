@@ -24,6 +24,13 @@ struct arg_struct {
     int column_height;
 };
 
+int find_proper (int min, int b, int max)
+{
+	if (b<=min) return min;
+	else if (b > min && b <= max) return b;
+	else return max;
+}
+
 void calctimediff (struct timeval tv1,struct timeval tv2)
 {
     long secs = tv2.tv_sec - tv1.tv_sec;
@@ -37,12 +44,14 @@ int calculatepixel(float **filter, int **picture_array, int c, int x, int y, int
     float pixel =0;
     int filtercordx;
     int filtercordy =0;
+    int proper_i;
+    int proper_j;
     for (int i = y-c/2; i <= y+c/2; ++i, filtercordy++) {
         filtercordx =0;
         for (int j = x-c/2; j <= x+c/2; ++j, filtercordx++) {
-            if (i < 0 || j < 0 || i>= height || j>= width) pixel += 1*filter[filtercordy][filtercordx];
-            else pixel += picture_array[i][j] * filter[filtercordy][filtercordx];
-
+        	proper_i = find_proper(0, i, height-1);
+        	proper_j = find_proper(0, j, width-1);
+            pixel += picture_array[proper_i][proper_j] * filter[filtercordy][filtercordx];
         }
     }
     int result = (int) roundf(pixel);
@@ -83,6 +92,7 @@ int main(int argc, char *argv[]) {
     int len = LINE_MAX;
     fgets(line, len, filter); // pierwsza linijka powinna miec c
     int c = (int) strtol(line, NULL, 10);
+    if (c%2 != 1) FAILURE_EXIT(1, "c should be odd.\n");
     float **filterarray = malloc(c * sizeof(float *));
     int l;
     for (l = 0; l < c; ++l) {
