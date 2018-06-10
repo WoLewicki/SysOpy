@@ -1,2 +1,3 @@
-./server wojtek 8083
+./server 8083 wojtek
 ./client ala 1 wojtek
+./client maciek 0 127.0.0.1 8083

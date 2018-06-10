@@ -16,7 +16,8 @@
 
 void main_process_function();
 
-int inet, local, epolld, counter;
+int inet, local, epolld;
+int expression_counter;
 
 char *local_name;
 
@@ -121,10 +122,8 @@ void handle_response (struct epoll_event events)
                     }
                 }
             case ORDER:
-                printf("Expression number: %d, result: %d.\n", msg.id, msg.msg_order.operand1);
-                fflush(stdout);
-                fflush(stdout);
-                fflush(stdout);
+                expression_counter++;
+                printf("Expression number: %d, from client %s, result: %d.\n", expression_counter, msg.name, msg.msg_order.operand1);
                 fflush(stdout);
                 return;
 
@@ -145,13 +144,13 @@ void *do_math(void *args)
     struct epoll_event events[MAX_EVENTS];
     while(1)
     {
-        counter = epoll_wait(epolld, events, MAX_EVENTS, -1); // waiting infinitely
+        int counter = epoll_wait(epolld, events, MAX_EVENTS, -1); // waiting infinitely
         for (int i=0; i<counter; i++)
         {
             if(events[i].data.fd == local || events[i].data.fd == inet)
             {
                 if (events[i].data.fd == local) printf("Local client is waiting to be added.\n");
-                else if (events[i].data.fd == inet) printf("Local client is waiting to be added.\n");
+                else if (events[i].data.fd == inet) printf("Inet client is waiting to be added.\n");
                 add_client(events[i]);
             }
             else
@@ -179,9 +178,7 @@ void *ping(void *args)
                 write(clients_array[i].fd, &msg, sizeof(msg));
             }
         }
-        pthread_mutex_unlock(&clients_array_mutex);
         sleep(3); // waiting for all clients to response by decremeting their pings counter
-        pthread_mutex_lock(&clients_array_mutex);
         for (int i = 0; i <MAX_CLIENTS ; ++i) {
             if(clients_array[i].pings == 1) // didn't decrement so is not responding
             {
@@ -192,7 +189,7 @@ void *ping(void *args)
             }
         }
         pthread_mutex_unlock(&clients_array_mutex);
-        sleep(15);
+        sleep(10);
     }
 }
 
@@ -229,10 +226,10 @@ int main(int argc, char *argv[])
     epolld = epoll_create1(0);
     struct epoll_event e;
     e.events = EPOLLIN | EPOLLET;
-    e.data.fd = local;
-    if (epoll_ctl(epolld, EPOLL_CTL_ADD, local, &e) < 0)
+    e.data.fd = inet;
+    if (epoll_ctl(epolld, EPOLL_CTL_ADD, inet, &e) < 0)
     {
-        FAILURE_EXIT(1, "Couldn't start epoll for LOCAL.\n");
+        FAILURE_EXIT(1, "Couldn't start epoll for INET.\n");
     }
 
     //local connection
@@ -249,9 +246,10 @@ int main(int argc, char *argv[])
     {
         FAILURE_EXIT(1, "Couldn't LISTEN in LOCAL.\n");
     }
-    e.data.fd = inet;
-    if (epoll_ctl(epolld, EPOLL_CTL_ADD, inet, &e) <0){
-        FAILURE_EXIT(1, "Couldn't start epoll for INET.\n");
+    e.events = EPOLLIN | EPOLLET;
+    e.data.fd = local;
+    if (epoll_ctl(epolld, EPOLL_CTL_ADD, local, &e) <0){
+        FAILURE_EXIT(1, "Couldn't start epoll for LOCAL.\n");
     }
 
     pthread_t math_thread;
@@ -290,22 +288,17 @@ void main_process_function()
         msg.msg_order.operand1 = operand1;
         msg.msg_order.operand2 = operand2;
         int infinity =1;
-        while(infinity)
-        {
+        while(infinity) {
             pthread_mutex_lock(&clients_array_mutex);
-            for(int i=0; i<MAX_CLIENTS; i++)
+            for (int i = 0; i < MAX_CLIENTS; i++)
             {
-                if(clients_array[i].pings >= 0)
-                {
+                if (clients_array[i].pings == 0) {
                     ssize_t quantity = write(clients_array[i].fd, &msg, sizeof(msg));
-                    if(quantity <= 0)
-                    {
+                    if (quantity <= 0) {
                         printf("Couldn't send msg to client %d.\n", clients_array[i].fd);
                         fflush(stdout);
-                    }
-                    else
-                    {
-                        printf("Sending order to client %s.\n", clients_array[i].name);
+                    } else {
+                        printf("Sending order.\n");
                         fflush(stdout);
                         infinity = 0;
                         break;
