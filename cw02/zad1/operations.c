@@ -138,6 +138,7 @@ void syscopy (char *fromfile, char *tofile, size_t records, size_t buffersize) /
         while ((bufferbytes=read(from, buffer, sizeof(buffersize)))> 0 && i< records)
         {
             write(to, buffer,(size_t) bufferbytes);
+            i++;
         }
     }
     close(from);

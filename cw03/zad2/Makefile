@@ -1,7 +1,6 @@
 export PATH := /home/wojlewy/CLionProjects/LewickiWojciech/cw03/zad1:$(PATH)
 
 main:
-	#compile test.c in zad1 to make it work.
 	gcc -Wall -o main main.c
 	./main input.txt
 	make clean
